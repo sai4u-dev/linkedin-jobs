@@ -1,0 +1,836 @@
+{
+  "collected_at": "2026-11-11T18:59:21.606+05:30",
+  "filters": {
+    "job_titles": [
+      "MERN Stack Developer",
+      "Java Developer",
+      "Frontend Developer",
+      "Backend Developer",
+      "UI/UX Developer",
+      "Data Analyst",
+      "Business Analyst",
+      "SDE - Entry Level"
+    ],
+    "location": "India",
+    "posted_within": "Past 24 hours",
+    "experience_level": "Entry level",
+    "keyword": "Fresher"
+  },
+  "fresher_match_rule": "Included only when the visible job title explicitly contained fresher/freshers, new grad/graduate, intern/internship, trainee, or off-campus wording. Job descriptions were not verified.",
+  "search_status": [
+    {
+      "filter": "MERN Stack Developer",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=MERN%20Stack%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "MERN Stack Developer Fresher Jobs in India (195 Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 11,
+      "status": "collected",
+      "error": null
+    },
+    {
+      "filter": "Java Developer",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Java%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Java Developer Fresher Jobs in India (292 Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 6,
+      "status": "collected",
+      "error": null
+    },
+    {
+      "filter": "Frontend Developer",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Frontend%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Frontend Developer Fresher Jobs in India (233 Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 14,
+      "status": "collected",
+      "error": null
+    },
+    {
+      "filter": "Backend Developer",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Backend%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": null,
+      "rendered_card_count": null,
+      "title_matches": 0,
+      "status": "unavailable",
+      "error": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('ul.jobs-search__results-list > li').first()\u001b[22m\n\u001b[2m    - waiting for navigation to finish...\u001b[22m\n\u001b[2m"
+    },
+    {
+      "filter": "UI/UX Developer",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=UI%2FUX%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "UI/UX Developer Fresher Jobs in India (130 Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 8,
+      "status": "collected",
+      "error": null
+    },
+    {
+      "filter": "Data Analyst",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Data%20Analyst%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Data Analyst Fresher Jobs in India (792 Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 11,
+      "status": "collected",
+      "error": null,
+      "user_provided_source_url": "https://in.linkedin.com/jobs/search?keywords=Data%20Analyst%20Fresher&location=India&geoId=102713980&f_TPR=r86400&activeFilter=f_TPR&position=1&pageNum=0",
+      "user_url_checked_additional_matches": 9
+    },
+    {
+      "filter": "Business Analyst",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Business%20Analyst%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Business Analyst Fresher Jobs in India (1,000+ Open Roles) | LinkedIn",
+      "rendered_card_count": 60,
+      "title_matches": 3,
+      "status": "collected",
+      "error": null
+    },
+    {
+      "filter": "SDE - Entry Level",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=SDE%20-%20Entry%20Level%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": null,
+      "rendered_card_count": null,
+      "title_matches": 0,
+      "status": "unavailable",
+      "error": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('ul.jobs-search__results-list > li').first()\u001b[22m\n"
+    }
+  ],
+  "result_count": 45,
+  "scope_note": "Partial collection: LinkedIn rendered results for six of eight searches before access became unavailable. Only the first results page was checked. Listings are deduplicated by job URL and ordered by requested filter sequence, then LinkedIn result position. User-provided Data Analyst URL (without an Entry level filter) was checked separately; all title-explicit fresher matches were already present, so no additional URLs were added.",
+  "listings": [
+    {
+      "title": "Software Engineer Intern",
+      "company": "Coy",
+      "location": "Gurugram, Haryana, India",
+      "posted": "23 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-engineer-intern-at-coy-4488353489",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer",
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 10,
+        "Frontend Developer": 59
+      },
+      "order": 1,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-engineer-intern-at-coy-4488353489"
+    },
+    {
+      "title": "Software Developer Intern",
+      "company": "IBM",
+      "location": "Kochi, Kerala, India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-developer-intern-at-ibm-4488220086",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer",
+        "Java Developer",
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 11,
+        "Java Developer": 11,
+        "Frontend Developer": 15
+      },
+      "order": 2,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-developer-intern-at-ibm-4488220086"
+    },
+    {
+      "title": "Software Developer Intern",
+      "company": "IBM",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-developer-intern-at-ibm-4487897966",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer",
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 15,
+        "Frontend Developer": 31
+      },
+      "order": 3,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-developer-intern-at-ibm-4487897966"
+    },
+    {
+      "title": "Full Stack Developer Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/full-stack-developer-intern-at-thinknovaa-4488694186",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 20
+      },
+      "order": 4,
+      "apply_link": "https://in.linkedin.com/jobs/view/full-stack-developer-intern-at-thinknovaa-4488694186"
+    },
+    {
+      "title": "MERN STACK DEVELOPMENT INTERN",
+      "company": "WebBoost Solutions by UM",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/mern-stack-development-intern-at-webboost-solutions-by-um-4489947330",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 22
+      },
+      "order": 5,
+      "apply_link": "https://in.linkedin.com/jobs/view/mern-stack-development-intern-at-webboost-solutions-by-um-4489947330"
+    },
+    {
+      "title": "Software Engineer Intern",
+      "company": "Offshore Minds",
+      "location": "India",
+      "posted": "22 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-engineer-intern-at-offshore-minds-4487801092",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 24
+      },
+      "order": 6,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-engineer-intern-at-offshore-minds-4487801092"
+    },
+    {
+      "title": "FULLSTACK WEB DEVELOPMENT INTERN",
+      "company": "Devryxa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-devryxa-4488690349",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "MERN Stack Developer",
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 28,
+        "Frontend Developer": 45
+      },
+      "order": 7,
+      "apply_link": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-devryxa-4488690349"
+    },
+    {
+      "title": "Full Stack Web Developer Intern",
+      "company": "Dexterz Technology",
+      "location": "India",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/full-stack-web-developer-intern-at-dexterz-technology-4488674828",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 29
+      },
+      "order": 8,
+      "apply_link": "https://in.linkedin.com/jobs/view/full-stack-web-developer-intern-at-dexterz-technology-4488674828"
+    },
+    {
+      "title": "Software Engineering Intern (Backend + Frontend)",
+      "company": "insureka",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "7 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-engineering-intern-backend-%2B-frontend-at-insureka-4488664314",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 33
+      },
+      "order": 9,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-engineering-intern-backend-%2B-frontend-at-insureka-4488664314"
+    },
+    {
+      "title": "FULLSTACK WEB DEVELOPMENT INTERN",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-talent-to-job-4489941431",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 52
+      },
+      "order": 10,
+      "apply_link": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-talent-to-job-4489941431"
+    },
+    {
+      "title": "FULLSTACK WEB DEVELOPMENT INTERN",
+      "company": "Vortenza Systems",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-vortenza-systems-4489000064",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "MERN Stack Developer"
+      ],
+      "positions_by_filter": {
+        "MERN Stack Developer": 53
+      },
+      "order": 11,
+      "apply_link": "https://in.linkedin.com/jobs/view/fullstack-web-development-intern-at-vortenza-systems-4489000064"
+    },
+    {
+      "title": "DE Intern + SDE Trainee - Off Campus Hiring 2026",
+      "company": "Sigmoid",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "22 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/de-intern-%2B-sde-trainee-off-campus-hiring-2026-at-sigmoid-4489488392",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Java Developer"
+      ],
+      "positions_by_filter": {
+        "Java Developer": 42
+      },
+      "order": 12,
+      "apply_link": "https://in.linkedin.com/jobs/view/de-intern-%2B-sde-trainee-off-campus-hiring-2026-at-sigmoid-4489488392"
+    },
+    {
+      "title": "Software Intern",
+      "company": "GE HealthCare",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-intern-at-ge-healthcare-4489931071",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Java Developer"
+      ],
+      "positions_by_filter": {
+        "Java Developer": 46
+      },
+      "order": 13,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-intern-at-ge-healthcare-4489931071"
+    },
+    {
+      "title": "Backend Developer Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/backend-developer-intern-at-thinknovaa-4488683407",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Java Developer"
+      ],
+      "positions_by_filter": {
+        "Java Developer": 49
+      },
+      "order": 14,
+      "apply_link": "https://in.linkedin.com/jobs/view/backend-developer-intern-at-thinknovaa-4488683407"
+    },
+    {
+      "title": "Back End Developer Intern",
+      "company": "Jobs4PanIndia",
+      "location": "India",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/back-end-developer-intern-at-jobs4panindia-4488690071",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Java Developer"
+      ],
+      "positions_by_filter": {
+        "Java Developer": 57
+      },
+      "order": 15,
+      "apply_link": "https://in.linkedin.com/jobs/view/back-end-developer-intern-at-jobs4panindia-4488690071"
+    },
+    {
+      "title": "Software Intern",
+      "company": "Thales",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "19 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/software-intern-at-thales-4489615629",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Java Developer"
+      ],
+      "positions_by_filter": {
+        "Java Developer": 59
+      },
+      "order": 16,
+      "apply_link": "https://in.linkedin.com/jobs/view/software-intern-at-thales-4489615629"
+    },
+    {
+      "title": "Full Stack Developer Intern",
+      "company": "PrimrIQ",
+      "location": "India",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/full-stack-developer-intern-at-primriq-4488677447",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer",
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 22,
+        "UI/UX Developer": 58
+      },
+      "order": 17,
+      "apply_link": "https://in.linkedin.com/jobs/view/full-stack-developer-intern-at-primriq-4488677447"
+    },
+    {
+      "title": "Digital Marketing & Local SEO Intern",
+      "company": "Alpha Connects",
+      "location": "Davangere, Karnataka, India",
+      "posted": "18 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/digital-marketing-local-seo-intern-at-alpha-connects-4487806980",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer",
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 27,
+        "UI/UX Developer": 52
+      },
+      "order": 18,
+      "apply_link": "https://in.linkedin.com/jobs/view/digital-marketing-local-seo-intern-at-alpha-connects-4487806980"
+    },
+    {
+      "title": "Frontend Developer Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/frontend-developer-intern-at-thinknovaa-4488692252",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer",
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 35,
+        "UI/UX Developer": 47
+      },
+      "order": 19,
+      "apply_link": "https://in.linkedin.com/jobs/view/frontend-developer-intern-at-thinknovaa-4488692252"
+    },
+    {
+      "title": "Web Development Intern",
+      "company": "Devryxa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/web-development-intern-at-devryxa-4488679753",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 44
+      },
+      "order": 20,
+      "apply_link": "https://in.linkedin.com/jobs/view/web-development-intern-at-devryxa-4488679753"
+    },
+    {
+      "title": "Front-End Developer Intern",
+      "company": "UM IT Solutions",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/front-end-developer-intern-at-um-it-solutions-4489928907",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 49
+      },
+      "order": 21,
+      "apply_link": "https://in.linkedin.com/jobs/view/front-end-developer-intern-at-um-it-solutions-4489928907"
+    },
+    {
+      "title": "Web Development Intern",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/web-development-intern-at-talent-to-job-4489927944",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 50
+      },
+      "order": 22,
+      "apply_link": "https://in.linkedin.com/jobs/view/web-development-intern-at-talent-to-job-4489927944"
+    },
+    {
+      "title": "FRONTEND DEVELOPMENT INTERN",
+      "company": "Vortenza Systems",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/frontend-development-intern-at-vortenza-systems-4488690360",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 52
+      },
+      "order": 23,
+      "apply_link": "https://in.linkedin.com/jobs/view/frontend-development-intern-at-vortenza-systems-4488690360"
+    },
+    {
+      "title": "Web Development Intern",
+      "company": "Vortenza Systems",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/web-development-intern-at-vortenza-systems-4488690354",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 56
+      },
+      "order": 24,
+      "apply_link": "https://in.linkedin.com/jobs/view/web-development-intern-at-vortenza-systems-4488690354"
+    },
+    {
+      "title": "Web Development Intern",
+      "company": "Dexter's Tech",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/web-development-intern-at-dexter-s-tech-4489937585",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 57
+      },
+      "order": 25,
+      "apply_link": "https://in.linkedin.com/jobs/view/web-development-intern-at-dexter-s-tech-4489937585"
+    },
+    {
+      "title": "FRONTEND DEVELOPMENT INTERN",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/frontend-development-intern-at-talent-to-job-4489949259",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Frontend Developer"
+      ],
+      "positions_by_filter": {
+        "Frontend Developer": 58
+      },
+      "order": 26,
+      "apply_link": "https://in.linkedin.com/jobs/view/frontend-development-intern-at-talent-to-job-4489949259"
+    },
+    {
+      "title": "Product Design & Growth Intern",
+      "company": "amy-tutor.com",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/product-design-growth-intern-4488216425",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "UI/UX Developer": 17
+      },
+      "order": 27,
+      "apply_link": "https://in.linkedin.com/jobs/view/product-design-growth-intern-4488216425"
+    },
+    {
+      "title": "UI/UX & Graphic Design Intern - HIPCASTLE",
+      "company": "HIPCASTLE.",
+      "location": "Mumbai, Maharashtra, India",
+      "posted": "14 minutes ago",
+      "job_url": "https://in.linkedin.com/jobs/view/ui-ux-graphic-design-intern-hipcastle-at-hipcastle-4488225417",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "UI/UX Developer": 20
+      },
+      "order": 28,
+      "apply_link": "https://in.linkedin.com/jobs/view/ui-ux-graphic-design-intern-hipcastle-at-hipcastle-4488225417"
+    },
+    {
+      "title": "UI/UX Design Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/ui-ux-design-intern-at-thinknovaa-4488686383",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "UI/UX Developer": 31
+      },
+      "order": 29,
+      "apply_link": "https://in.linkedin.com/jobs/view/ui-ux-design-intern-at-thinknovaa-4488686383"
+    },
+    {
+      "title": "UI/UX DESIGN INTERN",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/ui-ux-design-intern-at-talent-to-job-4489928934",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "UI/UX Developer": 41
+      },
+      "order": 30,
+      "apply_link": "https://in.linkedin.com/jobs/view/ui-ux-design-intern-at-talent-to-job-4489928934"
+    },
+    {
+      "title": "React native intern (unpaid)",
+      "company": "Haxcod Technologies",
+      "location": "Orai, Uttar Pradesh, India",
+      "posted": "7 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/react-native-intern-unpaid-at-haxcod-technologies-4488645644",
+      "fresher_title_evidence": "intern",
+      "matched_filters": [
+        "UI/UX Developer"
+      ],
+      "positions_by_filter": {
+        "UI/UX Developer": 48
+      },
+      "order": 31,
+      "apply_link": "https://in.linkedin.com/jobs/view/react-native-intern-unpaid-at-haxcod-technologies-4488645644"
+    },
+    {
+      "title": "Executive Trainee - Finance",
+      "company": "Envision Energy",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "6 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/executive-trainee-finance-at-envision-energy-4487891689",
+      "fresher_title_evidence": "Trainee",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 24
+      },
+      "order": 32,
+      "apply_link": "https://in.linkedin.com/jobs/view/executive-trainee-finance-at-envision-energy-4487891689"
+    },
+    {
+      "title": "DATA ANALYST INTERN",
+      "company": "Vortenza Systems",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-vortenza-systems-4488682538",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 29
+      },
+      "order": 33,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-vortenza-systems-4488682538"
+    },
+    {
+      "title": "DATA ANALYST INTERN",
+      "company": "Webs IT Solution",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-webs-it-solution-4489949273",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 31
+      },
+      "order": 34,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-webs-it-solution-4489949273"
+    },
+    {
+      "title": "Data Analyst Intern",
+      "company": "Voy",
+      "location": "Delhi, India",
+      "posted": "21 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-voy-4487491688",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 36
+      },
+      "order": 35,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-voy-4487491688"
+    },
+    {
+      "title": "Data Analyst Intern",
+      "company": "PrimrIQ",
+      "location": "India",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-primriq-4488677518",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 37
+      },
+      "order": 36,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-primriq-4488677518"
+    },
+    {
+      "title": "DATA ANALYST INTERN",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-talent-to-job-4489928955",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 39
+      },
+      "order": 37,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-talent-to-job-4489928955"
+    },
+    {
+      "title": "BUSINESS ANALYTICS INTERN",
+      "company": "Talent to Job",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/business-analytics-intern-at-talent-to-job-4489940450",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 44
+      },
+      "order": 38,
+      "apply_link": "https://in.linkedin.com/jobs/view/business-analytics-intern-at-talent-to-job-4489940450"
+    },
+    {
+      "title": "DATA ANALYST INTERN",
+      "company": "Devryxa",
+      "location": "India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-devryxa-4489943426",
+      "fresher_title_evidence": "INTERN",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 46
+      },
+      "order": 39,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-devryxa-4489943426"
+    },
+    {
+      "title": "Intern - Research",
+      "company": "Smytten",
+      "location": "Ahmedabad, Gujarat, India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/intern-research-at-smytten-4488698073",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 51
+      },
+      "order": 40,
+      "apply_link": "https://in.linkedin.com/jobs/view/intern-research-at-smytten-4488698073"
+    },
+    {
+      "title": "Data Analyst Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted": "2 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-thinknovaa-4488683423",
+      "fresher_title_evidence": "Intern",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 55
+      },
+      "order": 41,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analyst-intern-at-thinknovaa-4488683423"
+    },
+    {
+      "title": "Data Analytics Internship in Mumbai",
+      "company": "Marwadi Shares and Finance Ltd.",
+      "location": "Mumbai Metropolitan Region",
+      "posted": "13 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/data-analytics-internship-in-mumbai-at-marwadi-shares-and-finance-ltd-4487868080",
+      "fresher_title_evidence": "Internship",
+      "matched_filters": [
+        "Data Analyst"
+      ],
+      "positions_by_filter": {
+        "Data Analyst": 59
+      },
+      "order": 42,
+      "apply_link": "https://in.linkedin.com/jobs/view/data-analytics-internship-in-mumbai-at-marwadi-shares-and-finance-ltd-4487868080"
+    },
+    {
+      "title": "Associate - Finance Freshers MBA/CMA/CA",
+      "company": "Winfo Solutions",
+      "location": "Greater Hyderabad Area",
+      "posted": "3 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/associate-finance-freshers-mba-cma-ca-at-winfo-solutions-4488213147",
+      "fresher_title_evidence": "Fresher",
+      "matched_filters": [
+        "Business Analyst"
+      ],
+      "positions_by_filter": {
+        "Business Analyst": 25
+      },
+      "order": 43,
+      "apply_link": "https://in.linkedin.com/jobs/view/associate-finance-freshers-mba-cma-ca-at-winfo-solutions-4488213147"
+    },
+    {
+      "title": "Business Analyst Internship",
+      "company": "Tradl AI",
+      "location": "Bengaluru, Karnataka, India",
+      "posted": "1 hour ago",
+      "job_url": "https://in.linkedin.com/jobs/view/business-analyst-internship-at-tradl-ai-4489949192",
+      "fresher_title_evidence": "Internship",
+      "matched_filters": [
+        "Business Analyst"
+      ],
+      "positions_by_filter": {
+        "Business Analyst": 53
+      },
+      "order": 44,
+      "apply_link": "https://in.linkedin.com/jobs/view/business-analyst-internship-at-tradl-ai-4489949192"
+    },
+    {
+      "title": "Business Excellence Internship in Mumbai",
+      "company": "Flipspaces",
+      "location": "Mumbai Metropolitan Region",
+      "posted": "13 hours ago",
+      "job_url": "https://in.linkedin.com/jobs/view/business-excellence-internship-in-mumbai-at-flipspaces-4487851782",
+      "fresher_title_evidence": "Internship",
+      "matched_filters": [
+        "Business Analyst"
+      ],
+      "positions_by_filter": {
+        "Business Analyst": 54
+      },
+      "order": 45,
+      "apply_link": "https://in.linkedin.com/jobs/view/business-excellence-internship-in-mumbai-at-flipspaces-4487851782"
+    }
+  ]
+}

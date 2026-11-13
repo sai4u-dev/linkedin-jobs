@@ -1,8 +1,13 @@
 import Icon from './Icon.jsx'
-import { avatarColors, initials } from '../lib/api.js'
+import { avatarColors, formatRelativeTime, initials } from '../lib/api.js'
+import { useNow } from '../lib/useNow.js'
 
 export default function JobCard({ job, onOpen, index = 0 }) {
-  const fresh = job.posted_hours != null && job.posted_hours <= 3
+  const now = useNow()
+  const postedAt = job.posted_at ? new Date(job.posted_at).getTime() : NaN
+  const ageHours = Number.isNaN(postedAt) ? null : (now - postedAt) / 3600000
+  const fresh = ageHours != null && ageHours >= 0 && ageHours <= 3
+  const postedLabel = formatRelativeTime(job.posted_at, now) || job.posted_time || '—'
   const searches = job.matched_searches || []
 
   return (
@@ -11,8 +16,11 @@ export default function JobCard({ job, onOpen, index = 0 }) {
         <span className="job-avatar" style={avatarColors(job.company)}>
           {initials(job.company)}
         </span>
-        <span className={`posted-pill ${fresh ? 'posted-pill--fresh' : ''}`}>
-          <Icon name="clock" size={13} /> {job.posted_time || '—'}
+        <span
+          className={`posted-pill ${fresh ? 'posted-pill--fresh' : ''}`}
+          title={job.posted_at_approx || job.posted_at || ''}
+        >
+          <Icon name="clock" size={13} /> {postedLabel}
         </span>
       </div>
 

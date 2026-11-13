@@ -68,7 +68,7 @@ export default function Shell() {
   }
 
   const meta = TITLES[page]
-  const total = dataset?.result_count
+  const total = dataset?.total_listings ?? dataset?.result_count
 
   return (
     <div className="app-shell">

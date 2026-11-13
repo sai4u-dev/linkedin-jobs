@@ -86,8 +86,11 @@ app.get('/api/auth/me', requireAuth, (req, res) => {
 })
 
 app.get('/api/dataset', requireAuth, async (req, res) => {
-  const dataset = await Dataset.findOne({ key: 'default' }).lean()
-  res.json(dataset || {})
+  const [dataset, total] = await Promise.all([
+    Dataset.findOne({ key: 'default' }).lean(),
+    Job.countDocuments({}),
+  ])
+  res.json({ ...(dataset || {}), total_listings: total })
 })
 
 app.get('/api/overview', requireAuth, async (req, res) => {

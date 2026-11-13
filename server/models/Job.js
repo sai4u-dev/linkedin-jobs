@@ -18,6 +18,17 @@ const jobSchema = new mongoose.Schema(
     search_keyword: { type: String, default: '' },
     position_in_search: { type: Number, default: null },
     data_source: { type: String, default: '' },
+    listing_type: { type: String, default: 'job' },
+    role_type: { type: String, default: '' },
+    duration: { type: String, default: '' },
+    stipend: { type: String, default: '' },
+    eligibility: { type: String, default: '' },
+    experience_requirement: { type: String, default: '' },
+    eligibility_basis: { type: String, default: '' },
+    eligibility_evidence: { type: [String], default: [] },
+    workplace: { type: String, default: '' },
+    source_search: { type: String, default: '' },
+    posted_time_note: { type: String, default: '' },
     city: { type: String, default: '' },
     region: { type: String, default: '' },
     primary_search: { type: String, default: '' },
@@ -34,5 +45,6 @@ jobSchema.index({ posted_date: -1 })
 jobSchema.index({ matched_searches: 1 })
 jobSchema.index({ search_keyword: 1 })
 jobSchema.index({ data_source: 1 })
+jobSchema.index({ listing_type: 1 })
 
 export const Job = mongoose.model('Job', jobSchema)

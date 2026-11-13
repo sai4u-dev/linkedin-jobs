@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Icon from '../components/Icon.jsx'
-import { api } from '../lib/api.js'
+import { api, formatRelativeTime } from '../lib/api.js'
+import { useNow } from '../lib/useNow.js'
 import { ErrorNote, EmptyState, SkeletonCards } from '../components/ui.jsx'
 import JobCard from '../components/JobCard.jsx'
 
@@ -15,6 +16,7 @@ const SORTS = [
 const PAGE_SIZE = 9
 
 export default function Jobs({ refreshKey, seed, onOpenJob }) {
+  const now = useNow()
   const [search, setSearch] = useState(seed?.q || '')
   const [debounced, setDebounced] = useState(seed?.q || '')
   const [filter, setFilter] = useState('')
@@ -266,7 +268,9 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
                           </td>
                           <td>{job.location || '—'}</td>
                           <td>
-                            <span>{job.posted_time || '—'}</span>
+                            <span title={job.posted_at_approx || ''}>
+                              {formatRelativeTime(job.posted_at, now) || job.posted_time || '—'}
+                            </span>
                             <span className="jobs-table__sub">{job.posted_date_approx || '—'}</span>
                           </td>
                           <td>

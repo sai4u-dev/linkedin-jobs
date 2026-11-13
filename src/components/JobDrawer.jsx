@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Icon from './Icon.jsx'
-import { avatarColors, initials } from '../lib/api.js'
+import { avatarColors, formatRelativeTime, initials } from '../lib/api.js'
+import { useNow } from '../lib/useNow.js'
 
 function toObject(value) {
   if (!value) return {}
@@ -9,6 +10,8 @@ function toObject(value) {
 }
 
 export default function JobDrawer({ job, onClose }) {
+  const now = useNow()
+
   useEffect(() => {
     if (!job) return undefined
     const onKey = (event) => {
@@ -60,7 +63,9 @@ export default function JobDrawer({ job, onClose }) {
             <div className="detail-tile">
               <Icon name="clock" size={16} />
               <span>Posted</span>
-              <strong>{job.posted_time || '—'}</strong>
+              <strong title={job.posted_at_approx || ''}>
+                {formatRelativeTime(job.posted_at, now) || job.posted_time || '—'}
+              </strong>
             </div>
             <div className="detail-tile">
               <Icon name="calendar" size={16} />

@@ -594,7 +594,7 @@ cp .env.example .env
 | `MONGODB_URI` | No | `mongodb://127.0.0.1:27017/joblens` | MongoDB connection string |
 | `JWT_SECRET` | **Yes in production** | `dev-secret` | Secret used to sign and verify session tokens |
 | `ADMIN_EMAILS` | No | Built-in allowlist | Comma-separated list of admin emails |
-| `ADMIN_PASSWORD` | **Yes in production** | `acciojob@123` | Shared password for all allowlisted admins |
+| `ADMIN_PASSWORD` | **Yes in production** | Development fallback (see `.env.example`) | Shared password for all allowlisted admins |
 
 > **Never commit `.env`.** It is already listed in `.gitignore`. Use long, random values for `JWT_SECRET` and `ADMIN_PASSWORD` in any shared or public deployment.
 

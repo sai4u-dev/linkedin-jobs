@@ -23,18 +23,42 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Product Presentation](#product-presentation)
+  - [What Is JobLens?](#what-is-joblens)
+  - [The Problem It Solves](#the-problem-it-solves)
+  - [Who It Serves](#who-it-serves)
+  - [What You Can Do](#what-you-can-do)
+  - [Why JobLens](#why-joblens)
+  - [Product Journey](#product-journey)
+  - [How Teams Use It](#how-teams-use-it)
+  - [Product Scope](#product-scope)
+  - [Value Proposition](#value-proposition)
+  - [Success Measures](#success-measures)
 - [Feature Highlights](#feature-highlights)
 - [Screenshots](#screenshots)
 - [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
+- [Technical Documentation](#technical-documentation)
+  - [Engineering Goals and Constraints](#engineering-goals-and-constraints)
+  - [Technology Decisions](#technology-decisions)
+  - [Code Organization and Conventions](#code-organization-and-conventions)
   - [High-Level System Architecture](#high-level-system-architecture)
   - [Frontend Architecture](#frontend-architecture)
+  - [Frontend Engineering Details](#frontend-engineering-details)
   - [Backend Architecture](#backend-architecture)
+  - [Backend Engineering Details](#backend-engineering-details)
   - [Authentication and Request Flow](#authentication-and-request-flow)
   - [Data Ingestion Pipeline](#data-ingestion-pipeline)
   - [Data Model](#data-model)
   - [Module Dependency Map](#module-dependency-map)
+  - [API Design Conventions](#api-design-conventions)
+  - [Error Handling and Failure Modes](#error-handling-and-failure-modes)
+  - [Performance and Scalability](#performance-and-scalability)
+  - [Security Engineering](#security-engineering)
+  - [Testing and Quality](#testing-and-quality)
+  - [Observability and Operations](#observability-and-operations)
+  - [Extensibility and Extension Points](#extensibility-and-extension-points)
+  - [Engineering Trade-offs and Technical Debt](#engineering-trade-offs-and-technical-debt)
+  - [Build and Release Flow](#build-and-release-flow)
 - [Project Structure](#project-structure)
 - [Data Sources](#data-sources)
 - [Getting Started](#getting-started)
@@ -64,22 +88,123 @@
 
 ---
 
-## Overview
+## Product Presentation
 
-JobLens is a **read-only intelligence console** built on top of job listings collected from public LinkedIn search result pages. It answers questions such as:
+### What Is JobLens?
 
-- How many fresher-friendly roles are currently live, and which companies are hiring?
-- Which role tracks have the most listings, and how fresh are they?
-- Which cities concentrate the most opportunity?
-- How complete was the collection run — did every search return results?
+JobLens is a private, **read-only admin console** that turns a raw LinkedIn job-search export into a navigable intelligence layer for fresher hiring. It is not a job board and it does not scrape LinkedIn at runtime: it ingests pre-collected JSON snapshots, normalizes them into MongoDB, and serves a focused dashboard for understanding the roles, companies, locations and collection quality inside that snapshot.
 
-The application has three moving parts:
+> **One-line positioning:** JobLens turns a static LinkedIn job export into a searchable, explainable view of fresher hiring activity.
 
-1. **A JSON ingestion pipeline** (`server/seed.js`) that normalizes, de-duplicates and loads collected listings into MongoDB.
-2. **An Express REST API** (`server/index.js`) that authenticates admins and serves aggregated, paginated data.
-3. **A React SPA** (`src/`) that renders the admin experience in a dark, responsive interface.
+The product is built around a simple idea: **a dataset is only useful if you can see what is in it, how fresh it is, and whether you can trust it.** JobLens puts those three answers on one screen instead of leaving them buried in a JSON file or a spreadsheet.
 
-The Express app is exported as a request handler, which means the **same codebase runs as a long-lived server locally and as a serverless function on Vercel**.
+### The Problem It Solves
+
+| Problem | Why it matters | How JobLens addresses it |
+| --- | --- | --- |
+| **Raw exports are hard to read** | LinkedIn collections arrive as large JSON files with repeated fields, long URLs and nested search metadata | Normalizes every listing into a consistent schema with derived city, region, freshness and primary search |
+| **LinkedIn optimizes for applying, not analysis** | There is no built-in way to compare role tracks, cities or companies across an entire collected snapshot | Adds an overview and analytics layer with counts, distributions, freshness buckets and coverage |
+| **Spreadsheets drift** | Manual copies become stale, formulas break and provenance is lost | Stores one canonical snapshot in MongoDB and derives every number from it at request time |
+| **Collection quality is invisible** | A dashboard can look convincing even when half the searches failed or returned duplicates | Surfaces per-search status, visible card counts, coverage percentages and collection notes |
+| **Repeat questions are slow** | “Which tracks are hot?”, “Which cities?”, “How fresh?” require re-reading files each time | Pre-aggregated API responses make these answers a single click |
+| **Listings lack action context** | A flat row does not show which search found a role, where it ranked, or where to apply | The job drawer shows matched tracks, per-track ranking, original link and apply link |
+
+### Who It Serves
+
+| Audience | Primary need | How JobLens helps |
+| --- | --- | --- |
+| **Talent acquisition / recruiting teams** | Understand the competitive fresher market and which companies are hiring | Market totals, role-track distribution, location concentration, searchable listings |
+| **Hiring managers and founders** | Validate demand for a role, skill track or location before opening a requisition | Freshness and distribution views, filters, role-level detail |
+| **Placement and career-services teams** | Find fresh, relevant openings for students and early-career candidates | Fresher-specific fields, recent-first sorting, cards and table view, direct apply links |
+| **Data and operations analysts** | Verify completeness, de-duplication and provenance of a collection run | Dataset page with source file, filters, seed time, search status log and coverage |
+| **Engineers and maintainers** | Understand, operate and extend the system | Architecture diagrams, API reference, runbook, extension points and trade-off notes |
+
+JobLens is designed for **small, trusted teams** that need a private view of a snapshot. It is not a public job board, a multi-tenant SaaS product, or an automated recruiting CRM.
+
+### What You Can Do
+
+| Job to be done | Where it happens | Outcome |
+| --- | --- | --- |
+| **Size the market** | Overview | See total live roles, hiring companies, average freshness and dual-track roles at a glance |
+| **Compare role tracks** | Overview / Analytics | Understand which search tracks produce the most listings and how the dataset is distributed |
+| **Find a specific opportunity** | Job listings | Search by role, company or location; filter by track and city; sort by recency, company or title |
+| **Assess freshness** | Overview / Job cards / Analytics | Spot new roles with freshness buckets and relative timestamps |
+| **Inspect a listing** | Job drawer | Review location, posted date, matched tracks, ranking per search and apply links |
+| **Check collection quality** | Dataset / Analytics | See coverage percentages, per-search outcomes and visible card counts |
+| **Explain where the data came from** | Dataset | Review source file, collection time, timezone, filters and scope notes |
+| **Verify the system is healthy** | API | Use `/api/health` to check the API and MongoDB connection |
+
+### Why JobLens
+
+- **Purpose-built for fresher hiring.** The schema carries internship-specific fields such as `role_type`, `duration`, `stipend`, `eligibility` and `eligibility_evidence`, not just generic job fields.
+- **Provenance is a first-class feature.** The Dataset page records where the snapshot came from, when it was collected, which filters were used and whether every search returned results.
+- **Explainable numbers.** Counts are derived directly from the stored listings with documented aggregation rules; the UI shows the underlying collection notes rather than hiding them.
+- **Fast, focused exploration.** The dataset is already normalized and indexed, so filtering and switching between views is immediate. There is no BI tool to configure.
+- **Private by design.** The console and every data endpoint sit behind admin authentication; it is intended for internal use rather than public discovery.
+- **Small operational footprint.** One React app, one Express API, one MongoDB database, and a CLI seeder. It can run locally, on a VPS or as a serverless deployment.
+
+### Product Journey
+
+```mermaid
+flowchart LR
+    Collect["Collect LinkedIn<br/>search snapshot"] --> Seed["Normalize + seed<br/>MongoDB"]
+    Seed --> Login["Admin signs in"]
+    Login --> Overview["Read market<br/>overview"]
+    Overview --> Explore["Search and filter<br/>listings"]
+    Explore --> Inspect["Inspect a job<br/>and its tracks"]
+    Explore --> Analyze["Compare tracks,<br/>cities and freshness"]
+    Analyze --> Verify["Verify coverage<br/>and provenance"]
+    Inspect --> Act["Apply, shortlist or<br/>share the role"]
+    Verify --> Decide["Trust the snapshot<br/>or refresh it"]
+    Act --> Decide
+    Decide --> Collect
+```
+
+The loop matters: JobLens is not a one-off report. Teams collect a snapshot, inspect it, act on it, then refresh the dataset and repeat the process.
+
+### How Teams Use It
+
+1. **Collect a snapshot.** A teammate collects LinkedIn search results into the supported JSON files outside the app.
+2. **Seed the database.** Run `npm run seed` to normalize, de-duplicate and replace the current snapshot.
+3. **Read the market.** Open the Overview to see totals, tracks, freshness and coverage before drilling into individual roles.
+4. **Investigate.** Use search, track chips, location filters and sorting to answer a specific question.
+5. **Verify.** Check the Dataset page to confirm the collection was complete and understand its scope.
+6. **Act.** Open a listing drawer and use the apply or original LinkedIn link.
+7. **Refresh.** When the market moves, collect a new snapshot and repeat; the console always reflects the latest seed.
+
+### Product Scope
+
+| In scope | Out of scope |
+| --- | --- |
+| Read-only exploration of collected LinkedIn listings | Scraping LinkedIn inside the running application |
+| Fresher and generic job listings from supported JSON sources | Real-time job feeds or live listing synchronization |
+| Admin authentication with an email allowlist | Public sign-up, multi-tenant accounts or per-user roles |
+| Overview, listings, analytics and dataset provenance | Editing, deleting or creating listings from the UI |
+| Aggregated counts, facets and freshness buckets | Applicant tracking, applications, notes or recruiter CRM workflows |
+| Card, table and drawer views | Resume parsing, matching or candidate recommendations |
+| Vercel, Docker and Node-host deployment | Mobile native applications |
+
+### Value Proposition
+
+| Outcome | How the product delivers it |
+| --- | --- |
+| **Visibility** | One dashboard replaces manual reading of raw exports and ad-hoc spreadsheets |
+| **Speed** | Pre-aggregated API responses make common market questions immediate |
+| **Trust** | Provenance, collection notes and per-search coverage make the data auditable |
+| **Focus** | Fresher-specific fields and role-track filters keep attention on relevant opportunities |
+| **Reusability** | The same REST API can power future tools beyond this dashboard |
+| **Low overhead** | Small dependency surface, one database and a repeatable seeding workflow |
+
+### Success Measures
+
+| Measure | Why it matters | Where to observe it |
+| --- | --- | --- |
+| **Snapshot freshness** | Stale data leads to bad decisions | `collected_at` and `posted_hours` across Overview and Dataset |
+| **Search coverage** | Missing searches silently shrink the dataset | Coverage ring on Overview; search status log on Dataset |
+| **Record validity** | Invalid dates or duplicates distort counts | Seed output (imported vs. skipped rows) and record totals |
+| **Answer speed** | The console should replace file spelunking | Time to answer a market question using filters and analytics |
+| **Access reliability** | The console must be available when decisions are made | `/api/health` and deployment uptime checks |
+| **Data reuse** | A stable API enables other internal tools | Authenticated `/api/jobs` and `/api/overview` usage |
 
 ## Feature Highlights
 
@@ -144,7 +269,67 @@ The Express app is exported as a request handler, which means the **same codebas
 
 ---
 
-## Architecture
+## Technical Documentation
+
+This section explains how JobLens is engineered: its design goals, architecture, data pipeline, frontend and backend internals, security model, quality strategy, operations and extension points. It is written for engineers who need to review, operate or extend the codebase.
+
+### Engineering Goals and Constraints
+
+| Goal or constraint | Implication | How the implementation responds |
+| --- | --- | --- |
+| **One deployable codebase** | The UI and API must ship together without separate services | The Express app is exported from `server/index.js`; `api/index.js` adapts it for Vercel |
+| **Serverless compatible** | No reliance on long-lived process memory | Database connection is lazily created and its promise cached per function instance |
+| **Read-heavy, read-only workload** | Queries must be fast and bounded | Indexed fields, aggregation pipelines, pagination caps and top-N limits |
+| **No runtime scraping** | Data collection is external to the app | A CLI seeder imports pre-collected JSON snapshots |
+| **Small dependency surface** | Fewer packages to audit and maintain | No router, no chart library, no UI framework, no state library |
+| **Private access** | Unaided URLs must not expose data | Admin allowlist, shared password and JWT verification on every data route |
+| **Deterministic normalization** | The same source JSON must produce the same records | Pure parsing/derivation helpers in `server/seed.js` and a de-duplication map |
+| **Fast local onboarding** | A new developer should run one command | `npm run dev` runs the API and Vite together; Vite proxies `/api` |
+| **Portable deployment** | Support hosted and self-managed environments | Vercel config, multi-stage Dockerfile and plain `npm start` |
+| **Responsive, low-bandwidth UI** | The console should stay usable on smaller screens and slow links | Compact payloads, skeleton states, responsive CSS, WebP screenshots in docs |
+
+### Technology Decisions
+
+| Decision | Choice | Rationale | Trade-off |
+| --- | --- | --- | --- |
+| **Frontend framework** | React 18 | Component model maps cleanly to dashboard sections; hooks cover all state needs | No server-side rendering |
+| **Build tooling** | Vite 6 | Fast HMR, minimal config, built-in dev proxy and simple production output | SPA-only output; no framework-level data loading |
+| **Routing** | Conditional page rendering in `Shell` | Zero routing dependency; instant navigation; state survives page switches | No deep links, browser back/forward support or shareable page URLs |
+| **Styling** | One global `styles.css` | Full control over the custom dark theme; no design-system dependency | Large stylesheet; no CSS modules or scoping |
+| **API framework** | Express 4 | Minimal, familiar and easy to adapt to both server and serverless runtimes | Validation and serialization are manual |
+| **Database** | MongoDB | Listings contain arrays (`matched_searches`) and maps (`positions_by_search`) that fit document storage | No relational constraints; aggregation logic must be maintained in code |
+| **ODM** | Mongoose 8 | Schemas, defaults, indexes and casting with little boilerplate | Mixed types (dataset filters) are not strongly validated |
+| **Authentication** | JWT + email allowlist + shared password | Sufficient for a small internal console; no identity provider required | No per-user accounts, revocation list or granular roles |
+| **Session transport** | Bearer token in `localStorage` | Simple SPA integration; works identically on Vercel and Docker | Token is readable by JavaScript, so XSS protection matters |
+| **Data loading** | CLI seeder, destructive replace | Produces a clean, reproducible snapshot and avoids merge complexity | Manual refresh; no incremental ingestion |
+| **Client state** | Context for auth, local state for pages | Avoids Redux/Zustand for a small app | Some state ownership is centralised in `Shell` |
+| **Charts** | Hand-built CSS/SVG primitives | Keeps the bundle small and the visual language consistent | Only the chart types implemented in `ui.jsx` are available |
+| **Time display** | Shared `useSyncExternalStore` clock | One interval for all relative timestamps | Timestamps refresh every 30 seconds rather than continuously |
+| **Deployment** | Vercel serverless and Docker | Covers the managed and self-hosted cases with one codebase | Cold starts and platform limits apply on serverless |
+
+### Code Organization and Conventions
+
+The repository separates **runtime code**, **deployment adapters** and **documentation**:
+
+| Area | Responsibility |
+| --- | --- |
+| `server/` | Express application, models, auth middleware and seed pipeline |
+| `api/` | Deployment adapter that connects to MongoDB and delegates to the Express app |
+| `src/` | React application: pages, components, context, utilities and styles |
+| `docs/` | Banner and captured screenshots referenced by this README |
+| Root config | Vite, Vercel, Docker, environment template and package metadata |
+
+Conventions used throughout the codebase:
+
+- **ES modules only.** `"type": "module"` is set, and both backend and frontend use `import`/`export`.
+- **Formatting.** Single quotes, no semicolons, two-space indentation, trailing commas in multiline literals.
+- **Components.** PascalCase `.jsx` files; function components with hooks; props passed explicitly and destructured in the signature.
+- **Backend layout.** Routes live in `server/index.js`, cross-cutting request logic in `server/middleware/`, persistence in `server/models/`, and connection setup in `server/db.js`.
+- **Frontend layering.** `pages/` compose feature UI, `components/ui.jsx` holds reusable primitives, `components/` holds feature components, `lib/` holds network and formatting helpers, and `context/` holds session state.
+- **Naming.** `camelCase` for variables and functions, `PascalCase` for components and models, `SCREAMING_SNAKE_CASE` for constants, and `snake_case` for persisted fields to mirror the source JSON.
+- **Data contracts.** API responses reuse the MongoDB field names directly; the client consumes `snake_case` fields rather than maintaining a mapping layer.
+- **Errors.** The client wrapper throws `Error` objects with human-readable messages; the server returns `{ "error": "..." }` JSON with an HTTP status.
+- **Self-describing code.** Functions and variables carry the intent; comments are intentionally rare. New code should follow the same style.
 
 ### High-Level System Architecture
 
@@ -234,6 +419,98 @@ The `api()` helper centralises three behaviours:
 3. Clears the token and emits `joblens:unauthorized` on any `401`, which `AuthProvider` listens for.
 
 `useNow()` uses `useSyncExternalStore` to share a **single 30-second interval** across every card and drawer that renders relative timestamps, instead of starting one timer per component.
+
+### Frontend Engineering Details
+
+#### State ownership
+
+| State | Owner | Lifetime | Notes |
+| --- | --- | --- | --- |
+| Session token | `localStorage` + `AuthContext` | Persists until logout, expiry or `401` | Only persisted client state |
+| User profile | `AuthContext` | Hydrated from `/api/auth/me` on boot | Cleared by the `joblens:unauthorized` event |
+| Active page | `Shell` | Component lifetime | Conditional rendering, not a URL route |
+| Refresh key | `Shell` | Component lifetime | Incremented to force pages to refetch |
+| Global search seed | `Shell` → `Jobs` | Until the next global search | Passed as `{ q, key }`; the `key` change triggers the page effect |
+| Selected job | `Shell` | Until the drawer closes | Passed to `JobDrawer` |
+| Sidebar / refreshing UI flags | `Shell` | Component lifetime | Presentation only |
+| Dataset summary | `Shell` | Refetched per refresh key | Powers the sidebar dataset card and listing badge |
+| Query, filters, page, data, loading, error | Individual page | Page lifetime | Reset when `Shell` remounts content with `key={page}` |
+
+The rule is simple: **server state stays local to the page that fetches it**. There is no global cache, query client or store. Refreshes propagate by incrementing `refreshKey`, and a page remount intentionally resets its filters.
+
+#### Data fetching lifecycle
+
+1. A page effect sets an `error` to empty and starts a fetch through `api()`.
+2. A `cancelled` flag is captured. When the effect is cleaned up, late responses are ignored.
+3. On success, the payload is stored. On failure, the message is stored and surfaced through `ErrorNote`.
+4. `finally` clears loading only if the effect is still current.
+5. Search input is debounced for 300 ms; filter and sort changes reset pagination to page 1.
+
+The `api()` wrapper is deliberately small:
+
+```js
+const res = await fetch(path, { ...options, headers })
+const data = await res.json().catch(() => ({}))
+if (res.status === 401) {
+  setToken(null)
+  window.dispatchEvent(new CustomEvent('joblens:unauthorized'))
+  throw new Error(data.error || 'Unauthorized')
+}
+```
+
+This gives every caller identical token handling, JSON error parsing and session-expiry behaviour.
+
+#### Rendering pipeline
+
+- `App` decides between the boot screen, `Login` and `Shell`.
+- `Shell` renders exactly one page at a time inside `<main key={page}>`, so page-local state does not leak across navigation.
+- Lists use stable keys: `_id` for jobs, `name` for facet items and `label` for chart buckets.
+- Loading states use layout-matched skeletons rather than spinners.
+- `ErrorNote` offers a retry that increments a local reload counter.
+- `EmptyState` distinguishes “no data yet” from “no results for these filters”.
+
+#### Component contracts
+
+| Component | Inputs | Responsibility |
+| --- | --- | --- |
+| `Shell` | none (uses `useAuth`) | Layout, navigation, refresh orchestration, global search, drawer selection |
+| `Overview` | `refreshKey`, `onOpenJob`, `onNavigate` | Fetch and render market snapshot |
+| `Jobs` | `refreshKey`, `seed`, `onOpenJob` | Fetch and render searchable listing browser |
+| `Analytics` | `refreshKey` | Fetch and render distribution and coverage views |
+| `Dataset` | `refreshKey` | Fetch and render provenance and search log |
+| `JobCard` | `job`, `onOpen`, `index` | Compact listing summary with freshness indicator |
+| `JobDrawer` | `job`, `onClose` | Full listing detail, track ranking, external links |
+| `SectionCard` | `title`, `hint`, `action`, `icon`, `className`, `children` | Consistent panel chrome |
+| `StatCard` | `icon`, `label`, `value`, `foot`, `tone`, `loading` | KPI tile |
+| `BarList` / `ColumnChart` / `Donut` | `items`, plus chart-specific props | Dependency-free visualisations |
+| `ErrorNote` / `EmptyState` / `SkeletonCards` | Message, retry or count props | Failure, empty and loading states |
+
+#### Styling system
+
+- A single global stylesheet defines the dark palette, spacing, gradients, shadows and responsive breakpoints with CSS custom properties.
+- Class naming is BEM-like: block (`job-card`), element (`job-card__title`) and modifier (`is-active`, `tone-violet`). State classes use `is-` prefixes.
+- Layouts use CSS grid and flexbox; the sidebar collapses behind an overlay on narrow screens.
+- Animations are CSS transitions and keyframes; `prefers-reduced-motion` is not yet handled.
+
+#### Accessibility posture
+
+- Form fields are wrapped in `<label>` elements; icon-only buttons carry `aria-label`.
+- The view toggle uses `role="group"` and `aria-pressed`.
+- `Escape` closes the job drawer and restores body scrolling.
+- Charts expose textual counts next to visual bars, but there are no chart `<table>` alternatives.
+- Known gaps: the drawer does not trap or restore focus, and there are no live regions for asynchronous status announcements.
+
+#### Bundle profile
+
+The production build is intentionally lean:
+
+```text
+dist/index.html                 0.52 kB   │ gzip:  0.33 kB
+dist/assets/index-*.css        47.77 kB   │ gzip:  9.89 kB
+dist/assets/index-*.js        195.49 kB   │ gzip: 59.29 kB
+```
+
+No router, chart library, icon package or state-management library is shipped.
 
 ### Backend Architecture
 

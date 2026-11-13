@@ -19,6 +19,16 @@
   and renders it in a responsive React dashboard with market overview, listing browser, analytics and dataset provenance.
 </p>
 
+**How to read this README**
+
+| If you are… | Start with | Then read |
+| --- | --- | --- |
+| A stakeholder, founder or product owner | [Product Presentation](#product-presentation) | [Screenshots](#screenshots), [Value Proposition](#value-proposition) |
+| A recruiter or end user | [What Is JobLens?](#what-is-joblens) | [What You Can Do](#what-you-can-do), [Screenshots](#screenshots) |
+| An engineer onboarding to the code | [Technical Documentation](#technical-documentation) | [Architecture](#high-level-system-architecture), [Project Structure](#project-structure) |
+| An API consumer | [API Reference](#api-reference) | [Authentication](#authentication), [Example Requests](#example-requests) |
+| An operator or DevOps engineer | [Deployment](#deployment) | [Observability and Operations](#observability-and-operations), [Security Notes](#security-notes) |
+
 ---
 
 ## Table of Contents
@@ -549,6 +559,76 @@ Key backend decisions:
 - **Aggregation at the database**: counts, facet buckets and freshness distributions are computed in MongoDB rather than in Node or the browser.
 - **Static hosting fallback**: if `dist/` exists, Express serves the built SPA and sends `index.html` for any non-API route.
 
+### Backend Engineering Details
+
+#### Middleware and request pipeline
+
+Requests flow through the Express app in this order:
+
+1. `cors()` — permissive by default so local development and previews work without extra configuration.
+2. `express.json()` — parses JSON bodies for the login route.
+3. **Public routes** — `GET /api/health`, `POST /api/auth/login`.
+4. **Protected routes** — `requireAuth` verifies the bearer token before `/api/auth/me`, `/api/dataset`, `/api/overview`, `/api/jobs` and `/api/jobs/:id`.
+5. **Static hosting** — when `dist/` exists, static assets are served and non-API routes fall back to `index.html`.
+6. **Error middleware** — logs the error and returns a generic `500` JSON payload.
+
+#### Route implementation matrix
+
+| Route | Data access | Notes |
+| --- | --- | --- |
+| `GET /api/health` | Mongoose connection state only | No database round trip |
+| `POST /api/auth/login` | Environment variables only | Issues a JWT; no user collection exists |
+| `GET /api/auth/me` | Decoded `req.user` | Confirms a session without another lookup |
+| `GET /api/dataset` | `Dataset.findOne` + `Job.countDocuments` | Runs both in parallel |
+| `GET /api/overview` | Nine parallel queries/aggregations | Single round trip for Overview and Analytics |
+| `GET /api/jobs` | `find` + `countDocuments` + two facet aggregations | All four queries run in parallel |
+| `GET /api/jobs/:id` | `findById` or `findOne({ job_url })` | Chooses the lookup based on ObjectId validity |
+
+#### Query construction
+
+- `escapeRegex()` neutralises regex metacharacters before building the search pattern.
+- `q` becomes an `$or` across `title`, `company` and `location`.
+- `filter` performs an exact match against the `matched_searches` array.
+- `location` appends `city`, `region`, `location` and `search_keyword` patterns to the same `$or` array. **Search text and location therefore behave as a union rather than an intersection**; a future revision should wrap them with `$and` if combined filtering is required.
+- Sorting is restricted to a whitelist of five sort objects, with `order` as the fallback.
+- `page` is coerced to an integer and floored at `1`; `limit` is clamped to `1–50`.
+- The count and facet aggregations intentionally ignore the active filters so the filter chips and location options remain stable while browsing.
+
+#### Aggregation strategy
+
+- **Role-track facets** unwind `matched_searches` and group by track name, sorted by descending count.
+- **Location facets** group by `city`; the overview keeps the top 8 while the jobs endpoint keeps the top 20.
+- **Dual-track count** uses `{ 'matched_searches.1': { $exists: true } }` to count listings matched by at least two tracks.
+- **Freshness buckets** project only `posted_hours`, then bucket in Node across `0–1h`, `1–3h`, `3–6h`, `6–12h`, `12–24h` and `24h+`.
+- **Average freshness** is rounded to one decimal place.
+- **Search summary** is derived from the dataset provenance document rather than from the listings, keeping coverage tied to the collection run.
+
+#### Connection lifecycle
+
+- `server/db.js` enables `strictQuery`, sets an 8-second server-selection timeout and connects with `mongoose.connect`.
+- Locally, the process connects **before** `app.listen()` and exits if the connection fails.
+- On Vercel, `api/index.js` caches the connection promise. A rejection resets the promise so the next invocation can retry.
+- Mongoose reuses the underlying connection across warm serverless invocations; the platform manages final teardown.
+
+#### Static hosting and SPA fallback
+
+If `dist/` exists when the server starts, Express mounts it and serves `index.html` for any path that does not begin with `/api`. The check happens once at startup, so a build created **after** the server starts is not picked up until restart. In API-only deployments without `dist/`, the server simply exposes the API.
+
+#### Validation and error semantics
+
+- Login validation is intentionally narrow: identifier present, allowlisted, password exactly equal to `ADMIN_PASSWORD`.
+- Query parameters are parsed defensively and clamped rather than rejected.
+- There is no schema-validation library for request bodies because the only body is the login payload.
+- The central error middleware handles synchronous throws and logs unexpected failures.
+- **Known gap:** under Express 4, rejected promises from `async` route handlers are not automatically forwarded to the error middleware. A wrapper such as `express-async-errors` or explicit `try/catch` blocks is recommended before relying on centralized handling for database failures.
+- The serverless adapter separately catches connection failures and returns a `500` with `{ "error": "Database connection failed" }`.
+
+#### Testability notes
+
+- `parsePostedHours`, `parsePostedAt`, `parsePostedDate`, `deriveLocation` and `normalizeListing` are deterministic and can be unit tested directly once exported.
+- Route handlers currently talk to Mongoose models directly; extracting query/service functions would make integration testing easier.
+- The seed pipeline can be tested with fixture JSON and an in-memory or disposable database without touching the production dataset.
+
 ### Authentication and Request Flow
 
 ```mermaid
@@ -751,6 +831,200 @@ flowchart LR
     JobCard --> Now["src/lib/useNow.js"]
     Drawer --> Now
 ```
+
+### API Design Conventions
+
+JobLens exposes a small, deliberately consistent REST surface:
+
+| Convention | Implementation |
+| --- | --- |
+| **Base path** | Every route is under `/api` |
+| **Resource naming** | Nouns (`/jobs`, `/dataset`, `/overview`); no verbs except `/auth/login` and `/health` |
+| **HTTP methods** | `GET` for all reads; a single `POST` for login. No write endpoints exist for job data |
+| **Authentication** | `Authorization: Bearer <jwt>` on every route except health and login |
+| **Content type** | JSON request and response bodies |
+| **Single-resource responses** | Return the object directly (for example, a job or dataset document) |
+| **Collection responses** | Use an envelope: `items`, `total`, `page`, `pages`, `limit` |
+| **Facets** | Included in the `/jobs` response to avoid a second round trip |
+| **Errors** | Always `{ "error": "Human-readable message" }` |
+| **Status codes** | `200` success, `401` unauthenticated/expired, `404` unknown job, `500` unexpected server failure |
+| **Sorting** | Whitelisted enum values only; unknown values fall back to `order` |
+| **Bounds** | `limit` clamped to `1–50`; `page` floored at `1` |
+| **Field naming** | Persisted and returned fields use `snake_case` to mirror the source JSON |
+| **Versioning** | No version prefix; prefer additive changes over breaking changes |
+| **Read safety** | All data endpoints are idempotent and side-effect free |
+
+The frontend depends on these shapes directly, so any field rename is an API contract change and should be treated as such.
+
+### Error Handling and Failure Modes
+
+| Failure | Detection | Current behaviour | Recovery |
+| --- | --- | --- | --- |
+| **MongoDB unreachable at server boot** | `connectDb()` rejects | Process logs the error and exits | Fix `MONGODB_URI` or network access, then restart |
+| **MongoDB unreachable in serverless** | `ensureDb()` rejects | `500` with `{ "error": "Database connection failed" }`; promise resets | Next invocation retries naturally |
+| **Database error inside an async route** | Rejected promise | Express 4 may not forward it to the error middleware (known gap) | Add `try/catch` or an async wrapper; inspect function logs |
+| **Missing bearer token** | `requireAuth` | `401 Authentication required` | Sign in |
+| **Invalid or expired token** | `jwt.verify()` throws | `401 Session expired...`; client clears the token and emits an event | Return to login |
+| **Wrong email or password** | Login route comparison | `401 Invalid email or password` | Retry with allowlisted credentials |
+| **Unknown job id or URL** | Lookup returns `null` | `404 Job not found` | Verify the identifier |
+| **No listings in the database** | Empty query result | UI renders the empty state | Run `npm run seed` |
+| **Missing dataset document** | `findOne` returns `null` | API returns an object with `total_listings`; UI shows placeholders | Re-run the seed |
+| **Network/fetch failure** | `fetch` rejects | Page shows `ErrorNote` with a retry action | Retry or check connectivity |
+| **Invalid query parameters** | Parsing returns `NaN`/unknown values | Values are clamped or fall back to defaults | No action required |
+| **Invalid or duplicate seed rows** | Date validation and URL map | Rows are skipped before insertion | Inspect seed counts and source data |
+| **Mongoose validation during seed** | `insertMany` rejects | Seed exits with an error | Fix the offending rows and re-seed |
+
+### Performance and Scalability
+
+The current implementation is optimised for **hundreds to low thousands of listings**, which matches the collected snapshots. It keeps queries bounded and avoids shipping raw collections to the browser.
+
+| Mechanism | Where | Effect |
+| --- | --- | --- |
+| **Indexed fields** | `server/models/Job.js` | Supports sorting, filtering and uniqueness checks |
+| **Parallel queries** | Overview and jobs routes | Multiple aggregations run concurrently with `Promise.all` |
+| **Pagination** | `/api/jobs` | Bounded response size; `limit` capped at 50 |
+| **Top-N limits** | Location facets | Overview keeps 8 cities, jobs keeps 20 |
+| **Projection** | Freshness aggregation | Reads only `posted_hours` for bucket calculation |
+| **Connection reuse** | `api/index.js` | Warm serverless invocations reuse the Mongoose connection |
+| **Debounced search** | `Jobs.jsx` | Prevents a request per keystroke |
+| **Stale-response guards** | Page effects | Avoids rendering out-of-order responses |
+| **Static SPA delivery** | Vercel CDN / Express static | UI assets are cheap to serve |
+
+Known bottlenecks and scaling paths:
+
+- **Regex search is not index-backed.** `/api/jobs` uses case-insensitive regular expressions with wildcards, so MongoDB cannot use the text index for `q`. At larger volumes, switch to `$text` or Atlas Search and add relevance sorting.
+- **Overview aggregations scan the collection.** Every `/api/overview` request recomputes counts and buckets. Materialize them during seeding or cache the response with a short TTL.
+- **Facets are recomputed per listing request.** Cache facet aggregations or compute them from a materialized summary.
+- **The seeder is a full replacement.** It loads all normalized documents into memory before `insertMany`. For much larger datasets, stream batches and keep versioned snapshots.
+- **No HTTP caching layer.** Conditional requests, ETags and CDN caching for public assets are the natural next step.
+- **Combined filters use a union.** As noted above, `q` and `location` share an `$or` array; use `$and` when intersection semantics are required.
+
+### Security Engineering
+
+**Threat model.** The primary risks are unauthorised access to the dataset, credential guessing, token theft through cross-site scripting, regex-based query abuse, secret leakage and accidental public exposure of the admin console.
+
+| Control | Implementation |
+| --- | --- |
+| **Access control** | Email allowlist (`ADMIN_EMAILS`) plus shared password |
+| **Session integrity** | Signed JWT with a 12-hour expiry; verified on every protected request |
+| **Token transport** | Bearer header, not a cookie, which reduces CSRF exposure |
+| **Input handling** | Regex metacharacters escaped; pagination and limit values clamped |
+| **Secret handling** | `.env` is git-ignored; production values live in the platform's environment settings |
+| **Least data exposure** | Read-only routes; no raw collection dump; only documented aggregates are returned |
+| **Transport** | TLS terminated by Vercel, Docker reverse proxy or the hosting platform |
+| **Session revocation** | Client-side token removal on `401`; rotating `JWT_SECRET` invalidates all sessions |
+
+Known gaps, documented in more detail in [Security Notes](#security-notes):
+
+- Shared password rather than per-user credentials.
+- No login rate limiting, lockout or audit trail.
+- Permissive CORS (`cors()` with defaults).
+- Token stored in `localStorage`, which is accessible to any injected script.
+- No `helmet`, Content Security Policy or security headers.
+- No dependency or container scanning in the current workflow.
+
+### Testing and Quality
+
+The repository currently relies on build-time and manual verification rather than an automated test suite.
+
+| Check | How it is performed today | Status |
+| --- | --- | --- |
+| Frontend compilation | `npm run build` | Available |
+| API and database health | `GET /api/health` | Available |
+| Seed correctness | Seeder logs imported/skipped counts | Available |
+| Documentation diagrams | Mermaid parse validation | Verified during authoring |
+| Visual regression | Manual screenshot capture | Manual |
+| Unit tests | — | Not yet implemented |
+| Integration tests | — | Not yet implemented |
+| End-to-end tests | — | Not yet implemented |
+| Linting / formatting | — | No configured script |
+
+Recommended test pyramid:
+
+| Level | Targets | Suggested tooling |
+| --- | --- | --- |
+| **Unit** | `parsePostedHours`, `parsePostedAt`, `parsePostedDate`, `deriveLocation`, `normalizeListing`, `escapeRegex` | Vitest or Node's test runner |
+| **Integration** | Route behaviour against a disposable database, including auth and facets | Supertest + `mongodb-memory-server` |
+| **Contract** | `/api/jobs`, `/api/overview` and `/api/dataset` response shapes | Schema assertions or Zod |
+| **End-to-end** | Login → overview → filter → drawer → dataset | Playwright |
+| **Load** | Overview and jobs under realistic collection sizes | k6 or autocannon |
+
+Test data should be deterministic: use fixture JSON, freeze the clock for relative-time assertions and pin the `Asia/Kolkata` timezone. A PR quality gate should require a passing build, protected-route checks and updated documentation for any API change.
+
+### Observability and Operations
+
+Current observability is intentionally minimal:
+
+| Signal | Availability |
+| --- | --- |
+| **Health endpoint** | `GET /api/health` reports API liveness and MongoDB connection state |
+| **Startup log** | `JobLens API listening on http://localhost:<port>` |
+| **Seed logs** | Imported count, skipped count and database name |
+| **Error logs** | Central error middleware logs unexpected errors; serverless adapter logs connection failures |
+| **Request logs** | Not implemented |
+| **Metrics and tracing** | Not implemented |
+| **Alerting** | Not implemented |
+
+Operational runbook:
+
+| Symptom | Checks | Action |
+| --- | --- | --- |
+| Login always fails | `ADMIN_EMAILS`, `ADMIN_PASSWORD`, `.env` loaded, process restarted | Correct credentials and restart |
+| Dashboard is empty | Seed completed, `MONGODB_URI` points to the expected database | Run `npm run seed` |
+| `/api/health` reports disconnected | Atlas status, IP allowlist, credentials, network egress | Restore connectivity and redeploy |
+| `500` responses | Function/server logs, database status, query errors | Fix the underlying error; restart or redeploy |
+| Data looks stale | `collected_at`, `seeded_at`, latest `posted_hours` | Collect a new snapshot and re-seed |
+| Sessions expire unexpectedly | `JWT_SECRET` changed, token older than 12 hours | Sign in again; keep the secret stable |
+| Queries slow down | Collection size, index presence, aggregation latency | Add indexes, cache aggregates or move to a search index |
+
+Operationally, treat `JWT_SECRET` and `ADMIN_PASSWORD` as rotatable secrets, keep database backups enabled, and rehearse restoring a snapshot before relying on the console for decisions.
+
+### Extensibility and Extension Points
+
+| Change | Where to work | Steps |
+| --- | --- | --- |
+| **Add a new data source** | `server/seed.js` | Add the file to `SOURCE_FILES`, map its fields in `normalizeListing`, extend `buildDataset`, then re-seed |
+| **Add a listing field** | `server/models/Job.js`, `server/seed.js`, UI | Add the schema field and normalization, surface it in the drawer or card, then include it in API docs |
+| **Add an API endpoint** | `server/index.js` | Add the route behind `requireAuth`, keep the JSON envelope conventions, then document it |
+| **Add a dashboard page** | `src/pages/`, `Shell.jsx` | Create the page, add it to `NAV` and `TITLES`, then render it in the page switch |
+| **Add a chart type** | `src/components/ui.jsx` | Build on `PALETTE` and the existing CSS conventions, then reuse it in a page |
+| **Replace authentication** | Login route, `middleware/auth.js`, `AuthContext` | Add per-user accounts and hashed passwords, keep the token contract or move to cookies |
+| **Automate ingestion** | Seeder + scheduler | Package the seed as a scheduled job, add dataset versioning and rollback |
+| **Add saved views or export** | `Jobs.jsx` | Persist filter state (URL or local storage) and add a client-side export action |
+| **Support multiple datasets** | `Dataset` model + queries | Add a dataset key to the job query, a dataset selector, and scoped aggregations |
+
+The most valuable architectural investment is a **shared API contract** (TypeScript types or runtime schemas) so the server's aggregation output and the client's expectations cannot drift silently.
+
+### Engineering Trade-offs and Technical Debt
+
+| Area | Current choice | Why | Debt / next step |
+| --- | --- | --- | --- |
+| **Routing** | Conditional rendering, no URLs | Zero dependencies and instant navigation | No deep links or back/forward; add a router or URL state if sharing views matters |
+| **Search** | Regex `$or` | Simple and case-insensitive | Collection scans and union semantics; move to `$text`/Atlas Search and `$and` |
+| **Data refresh** | Destructive full seed | Predictable snapshot, no merge logic | No history or rollback; add versioned datasets and incremental loads |
+| **Authentication** | Shared password | Minimal setup for a small internal team | No per-user identity or audit; add hashed accounts or SSO |
+| **Token storage** | `localStorage` | Simple SPA integration | XSS exposure; consider `httpOnly` cookies |
+| **CORS** | Open to all origins | Frictionless local/preview use | Restrict to known origins in production |
+| **Async errors** | Relies on Express error middleware | Straightforward handlers | Express 4 does not catch rejected promises; add a wrapper |
+| **Types** | No TypeScript or runtime schemas | Small codebase, faster iteration | Contract drift risk between API and UI; add shared schemas |
+| **Tests** | Manual verification only | Time and scope | Add unit and integration tests before the next major change |
+| **Facets** | Global, unfiltered | Keeps filter options stable | Can confuse users when counts exceed visible results; scope or label them |
+| **CSS** | One global stylesheet | Full control, no tooling | Large file and global namespace; consider CSS modules if the UI grows |
+| **Indexes** | Single-field indexes | Cover current query patterns | The text index is unused by regex search; either use it or remove it |
+| **Validation** | Mongoose required fields only | Minimal ceremony | Bad source rows can fail an entire seed batch; validate before insert |
+
+### Build and Release Flow
+
+1. **Install** — `npm ci` for a reproducible dependency tree.
+2. **Develop** — `npm run dev` runs the API with `node --watch` and Vite with HMR on port `5173`.
+3. **Build** — `npm run build` produces the SPA in `dist/`.
+4. **Smoke test locally** — start `npm start`, verify `/api/health`, sign in, and open all four pages.
+5. **Seed the target database** — run `npm run seed` with the production `MONGODB_URI`; confirm the imported and skipped counts.
+6. **Deploy** — push to the connected Git branch (Vercel) or build and run the Docker image.
+7. **Verify** — check health, login, listing totals and the dataset page; confirm the deployment points at the intended database.
+8. **Monitor** — watch function logs and health checks after release; re-seed only through a controlled step.
+
+A recommended CI pipeline would run `npm ci`, `npm run build`, unit and integration tests, a Docker build (when the daemon is available), and a post-deploy health check. Artifacts should never include `.env` files or database dumps.
 
 ---
 
@@ -1418,6 +1692,8 @@ Current limitations:
 - No automated test suite, CI workflow or lint configuration.
 - No rate limiting, audit log or role-based permissions.
 - No scheduled ingestion; refreshing data is a manual seed step.
+- Search uses case-insensitive regex rather than the text index, and combined search + location filters use union semantics.
+- No deep-linkable page URLs; navigation state lives in `Shell` rather than the browser history.
 
 Potential next steps:
 

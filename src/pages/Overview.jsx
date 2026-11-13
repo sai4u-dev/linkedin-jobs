@@ -53,7 +53,7 @@ export default function Overview({ refreshKey, onOpenJob, onNavigate }) {
           <h2>
             {stats ? (
               <>
-                <span className="gradient-text">{stats.total} fresher-friendly roles</span> across{' '}
+                <span className="gradient-text">{stats.total} live roles</span> across{' '}
                 {stats.companies} companies.
               </>
             ) : (
@@ -61,9 +61,9 @@ export default function Overview({ refreshKey, onOpenJob, onNavigate }) {
             )}
           </h2>
           <p className="pulse-card__lede">
-            Collected {formatDate(dataset?.collected_at)} for {dataset?.filters?.location || 'India'} · entry level ·{' '}
-            keyword “{dataset?.filters?.keyword || 'Fresher'}”. Browse role tracks, freshness and search coverage in one
-            place.
+            Collected {formatDate(dataset?.collected_at)} for {dataset?.filters?.location || 'India'} ·{' '}
+            {dataset?.filters?.posted_within || 'Past 24 hours'} · {dataset?.searches?.length ?? 0} search tracks.
+            Browse role tracks, freshness and search coverage in one place.
           </p>
           <div className="pulse-card__chips">
             {stats ? (
@@ -162,14 +162,14 @@ export default function Overview({ refreshKey, onOpenJob, onNavigate }) {
         </SectionCard>
 
         <SectionCard
-          title="Fresher signal in titles"
-          hint="What triggered the fresher match rule"
-          icon="graduation"
+          title="Primary search track"
+          hint="How listings are distributed across the primary search they were found in"
+          icon="layers"
           className="span-7"
         >
           {data ? (
             <Donut
-              items={data.evidenceCounts}
+              items={data.primarySearchCounts}
               centerValue={stats?.total ?? 0}
               centerLabel="listings"
             />

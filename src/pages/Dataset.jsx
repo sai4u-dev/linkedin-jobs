@@ -40,11 +40,11 @@ export default function Dataset({ refreshKey }) {
   }
 
   const filters = data?.filters || {}
-  const titles = filters.job_titles || []
-  const searchStatus = data?.search_status || []
-  const collected = searchStatus.filter((item) => item.status === 'collected').length
+  const searches = data?.searches || []
+  const searchStatus = searches
+  const collected = searchStatus.filter((item) => item.results_collected).length
   const coverage = searchStatus.length ? Math.round((collected / searchStatus.length) * 100) : 0
-  const matches = searchStatus.reduce((sum, item) => sum + (item.title_matches || 0), 0)
+  const cards = searchStatus.reduce((sum, item) => sum + (item.visible_card_count || 0), 0)
 
   return (
     <div className="page">
@@ -85,9 +85,9 @@ export default function Dataset({ refreshKey }) {
               <Icon name="sparkles" size={19} />
             </span>
           </div>
-          <div className="stat-card__value">{matches}</div>
-          <div className="stat-card__label">Title matches</div>
-          <div className="stat-card__foot">Fresher wording detected</div>
+          <div className="stat-card__value">{cards}</div>
+          <div className="stat-card__label">Cards visible</div>
+          <div className="stat-card__foot">Across all search result pages</div>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ export default function Dataset({ refreshKey }) {
             <MetaRow icon="database" label="Seeded at" value={formatDate(data?.seeded_at)} />
             <MetaRow icon="layers" label="Source file" value={data?.source_file || '—'} mono />
             <MetaRow icon="briefcase" label="Records" value={`${data?.result_count ?? 0} listings`} />
-            <MetaRow icon="target" label="Search records" value={`${searchStatus.length} filters`} />
+            <MetaRow icon="target" label="Search records" value={`${searchStatus.length} searches`} />
             <MetaRow icon="link" label="Database" value="MongoDB · joblens" mono />
           </div>
           <div className="db-badge">
@@ -117,20 +117,20 @@ export default function Dataset({ refreshKey }) {
               <strong>{filters.posted_within || '—'}</strong>
             </div>
             <div className="filter-tile">
-              <span>Experience level</span>
-              <strong>{filters.experience_level || '—'}</strong>
+              <span>Timezone</span>
+              <strong>{data?.timezone || '—'}</strong>
             </div>
             <div className="filter-tile">
-              <span>Keyword</span>
-              <strong>{filters.keyword || '—'}</strong>
+              <span>Source reference</span>
+              <strong>{data?.source_reference || '—'}</strong>
             </div>
           </div>
           <div className="filter-titles">
-            <span className="filter-titles__label">Job titles targeted</span>
+            <span className="filter-titles__label">Searches collected</span>
             <div className="tag-row">
-              {titles.map((title) => (
-                <span className="tag tag--accent" key={title}>
-                  {title}
+              {searchStatus.map((search) => (
+                <span className="tag tag--accent" key={search.keyword}>
+                  {search.keyword}
                 </span>
               ))}
             </div>
@@ -148,35 +148,29 @@ export default function Dataset({ refreshKey }) {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Filter</th>
+                <th>Search</th>
                 <th>Status</th>
                 <th className="num">Cards</th>
-                <th className="num">Matches</th>
+                <th>Collected at</th>
                 <th>Source</th>
               </tr>
             </thead>
             <tbody>
               {searchStatus.map((item) => {
-                const isCollected = item.status === 'collected'
+                const isCollected = Boolean(item.results_collected)
                 return (
-                  <tr key={item.filter}>
+                  <tr key={item.keyword}>
                     <td>
-                      <strong>{item.filter}</strong>
-                      {!isCollected && item.error ? (
-                        <details className="row-error">
-                          <summary>Error details</summary>
-                          <pre>{item.error}</pre>
-                        </details>
-                      ) : null}
+                      <strong>{item.keyword}</strong>
                     </td>
                     <td>
                       <span className={`status-pill ${isCollected ? 'status-pill--ok' : 'status-pill--warn'}`}>
                         {isCollected ? <Icon name="check" size={12} /> : <Icon name="alert" size={12} />}
-                        {item.status}
+                        {isCollected ? 'collected' : 'not collected'}
                       </span>
                     </td>
-                    <td className="num">{item.rendered_card_count ?? '—'}</td>
-                    <td className="num">{item.title_matches ?? 0}</td>
+                    <td className="num">{item.visible_card_count ?? '—'}</td>
+                    <td>{item.collected_at || '—'}</td>
                     <td>
                       {item.source_url ? (
                         <a className="table-link" href={item.source_url} target="_blank" rel="noreferrer">
@@ -201,8 +195,8 @@ export default function Dataset({ refreshKey }) {
               <Icon name="graduation" size={17} />
             </span>
             <div>
-              <strong>Fresher match rule</strong>
-              <p>{data?.fresher_match_rule || 'No rule recorded.'}</p>
+              <strong>Posting time note</strong>
+              <p>{data?.posting_time_note || 'No note recorded.'}</p>
             </div>
           </div>
           <div className="note-card">

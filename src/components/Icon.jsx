@@ -7,6 +7,13 @@ const paths = {
       <rect x="14" y="14" width="7" height="7" rx="2" />
     </>
   ),
+  table: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2.5" />
+      <path d="M3 10h18" />
+      <path d="M9 10v10" />
+    </>
+  ),
   briefcase: (
     <>
       <rect x="3" y="7" width="18" height="13" rx="2.5" />

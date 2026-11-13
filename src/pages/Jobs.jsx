@@ -19,8 +19,8 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
   const [debounced, setDebounced] = useState(seed?.q || '')
   const [filter, setFilter] = useState('')
   const [location, setLocation] = useState('')
-  const [evidence, setEvidence] = useState('')
   const [sort, setSort] = useState('order')
+  const [view, setView] = useState('grid')
   const [page, setPage] = useState(1)
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -45,13 +45,12 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
       q: debounced,
       filter,
       location,
-      evidence,
       sort,
       page: String(page),
       limit: String(PAGE_SIZE),
     })
     return params.toString()
-  }, [debounced, filter, location, evidence, sort, page])
+  }, [debounced, filter, location, sort, page])
 
   useEffect(() => {
     let cancelled = false
@@ -73,7 +72,7 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
   }, [queryString, refreshKey, reload])
 
   const facets = data?.facets
-  const activeCount = [filter, location, evidence, debounced].filter(Boolean).length
+  const activeCount = [filter, location, debounced].filter(Boolean).length
 
   function updateFilter(next) {
     setFilter((current) => (current === next ? '' : next))
@@ -85,7 +84,6 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
     setDebounced('')
     setFilter('')
     setLocation('')
-    setEvidence('')
     setSort('order')
     setPage(1)
   }
@@ -154,25 +152,6 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
             </label>
 
             <label className="select">
-              <Icon name="graduation" size={16} />
-              <select
-                value={evidence}
-                onChange={(event) => {
-                  setEvidence(event.target.value)
-                  setPage(1)
-                }}
-              >
-                <option value="">All signals</option>
-                {(facets?.evidence || []).map((item) => (
-                  <option value={item.name} key={item.name}>
-                    {item.name || 'Unknown'} ({item.count})
-                  </option>
-                ))}
-              </select>
-              <Icon name="chevronDown" size={14} />
-            </label>
-
-            <label className="select">
               <Icon name="filter" size={16} />
               <select value={sort} onChange={(event) => setSort(event.target.value)}>
                 {SORTS.map((option) => (
@@ -220,11 +199,31 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
               </>
             ) : null}
           </p>
-          {activeCount ? (
-            <button className="btn btn--ghost btn--sm" onClick={resetAll}>
-              <Icon name="x" size={14} /> Clear filters
-            </button>
-          ) : null}
+          <div className="toolbar-actions">
+            {activeCount ? (
+              <button className="btn btn--ghost btn--sm" onClick={resetAll}>
+                <Icon name="x" size={14} /> Clear filters
+              </button>
+            ) : null}
+            <div className="view-toggle" role="group" aria-label="View mode">
+              <button
+                className={`view-toggle__btn ${view === 'grid' ? 'is-active' : ''}`}
+                onClick={() => setView('grid')}
+                aria-pressed={view === 'grid'}
+                title="Card view"
+              >
+                <Icon name="grid" size={14} /> Cards
+              </button>
+              <button
+                className={`view-toggle__btn ${view === 'table' ? 'is-active' : ''}`}
+                onClick={() => setView('table')}
+                aria-pressed={view === 'table'}
+                title="Table view"
+              >
+                <Icon name="table" size={14} /> Table
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -232,11 +231,78 @@ export default function Jobs({ refreshKey, seed, onOpenJob }) {
         <SkeletonCards count={PAGE_SIZE} />
       ) : data?.items.length ? (
         <>
-          <div className={`job-grid ${loading ? 'is-refreshing' : ''}`}>
-            {data.items.map((job, index) => (
-              <JobCard job={job} onOpen={onOpenJob} index={index} key={job._id} />
-            ))}
-          </div>
+          {view === 'grid' ? (
+            <div className={`job-grid ${loading ? 'is-refreshing' : ''}`}>
+              {data.items.map((job, index) => (
+                <JobCard job={job} onOpen={onOpenJob} index={index} key={job._id} />
+              ))}
+            </div>
+          ) : (
+            <div className={`card jobs-table-card ${loading ? 'is-refreshing' : ''}`}>
+              <div className="table-wrap">
+                <table className="data-table jobs-table">
+                  <thead>
+                    <tr>
+                      <th>Role</th>
+                      <th>Location</th>
+                      <th>Posted</th>
+                      <th>Matched tracks</th>
+                      <th>Source</th>
+                      <th className="num">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.items.map((job) => {
+                      const searches = job.matched_searches || []
+                      return (
+                        <tr
+                          key={job._id}
+                          className="jobs-table__row"
+                          onClick={() => onOpenJob(job)}
+                        >
+                          <td>
+                            <strong className="jobs-table__title">{job.title}</strong>
+                            <span className="jobs-table__sub">{job.company}</span>
+                          </td>
+                          <td>{job.location || '—'}</td>
+                          <td>
+                            <span>{job.posted_time || '—'}</span>
+                            <span className="jobs-table__sub">{job.posted_date_approx || '—'}</span>
+                          </td>
+                          <td>
+                            <div className="tag-row tag-row--tight">
+                              {searches.slice(0, 2).map((search) => (
+                                <span className="tag" key={search}>
+                                  {search}
+                                </span>
+                              ))}
+                              {searches.length > 2 ? (
+                                <span className="tag tag--muted">+{searches.length - 2}</span>
+                              ) : null}
+                            </div>
+                          </td>
+                          <td>
+                            <span className="tag tag--accent">{job.data_source || 'live'}</span>
+                          </td>
+                          <td className="num">
+                            <button
+                              className="btn btn--soft btn--sm"
+                              onClick={(event) => {
+                                event.stopPropagation()
+                                onOpenJob(job)
+                              }}
+                            >
+                              View
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {data.pages > 1 ? (
             <div className="pagination">

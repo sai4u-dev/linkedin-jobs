@@ -42,10 +42,10 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('joblens:unauthorized', handler)
   }, [])
 
-  const login = useCallback(async (username, password) => {
+  const login = useCallback(async (email, password) => {
     const data = await api('/api/auth/login', {
       method: 'POST',
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     })
     setToken(data.token)
     setUser(data.user)

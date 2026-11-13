@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 
 export default function Login() {
   const { login } = useAuth()
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
@@ -16,7 +16,7 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      await login(username.trim(), password)
+      await login(email.trim(), password)
     } catch (err) {
       setError(err.message || 'Unable to sign in')
     } finally {
@@ -142,15 +142,15 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="login-form">
             <label className="field">
-              <span className="field__label">Username</span>
+              <span className="field__label">Email</span>
               <span className="input-wrap">
                 <Icon name="user" size={18} className="input-icon" />
                 <input
-                  type="text"
-                  autoComplete="username"
-                  placeholder="admin"
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
+                  type="email"
+                  autoComplete="email"
+                  placeholder="you@acciojob.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   required
                 />
               </span>
@@ -197,18 +197,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          <div className="credential-hint">
-            <div className="credential-hint__icon">
-              <Icon name="sparkles" size={16} />
-            </div>
-            <div>
-              <strong>Demo credentials</strong>
-              <p>
-                Username <code>admin</code> · Password <code>admin123</code>
-              </p>
-            </div>
-          </div>
 
           <p className="login-foot">
             <Icon name="lock" size={13} /> Protected console · session expires in 12 hours

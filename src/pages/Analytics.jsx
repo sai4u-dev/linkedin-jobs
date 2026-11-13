@@ -52,16 +52,16 @@ export default function Analytics({ refreshKey }) {
   const dataset = data?.dataset
   const filterCounts = data?.filterCounts || []
   const locationCounts = data?.locationCounts || []
-  const evidenceCounts = data?.evidenceCounts || []
+  const primarySearchCounts = data?.primarySearchCounts || []
   const buckets = data?.postedBuckets || []
-  const searchStatus = dataset?.search_status || []
+  const searchStatus = dataset?.searches || []
 
   const topTrack = filterCounts[0]
   const topLocation = locationCounts[0]
-  const topEvidence = evidenceCounts[0]
+  const topPrimary = primarySearchCounts[0]
   const freshNow = buckets.slice(0, 2).reduce((sum, item) => sum + item.count, 0)
   const freshShare = stats?.total ? Math.round((freshNow / stats.total) * 100) : 0
-  const collected = searchStatus.filter((item) => item.status === 'collected').length
+  const collected = searchStatus.filter((item) => item.results_collected).length
   const coverage = searchStatus.length ? Math.round((collected / searchStatus.length) * 100) : 0
 
   return (
@@ -82,11 +82,11 @@ export default function Analytics({ refreshKey }) {
           hint={topLocation ? `${topLocation.count} listings` : 'Awaiting data'}
         />
         <Insight
-          icon="graduation"
+          icon="layers"
           tone="green"
-          label="Dominant fresher signal"
-          value={topEvidence ? topEvidence.name : '—'}
-          hint={topEvidence ? `${topEvidence.count} titles matched` : 'Awaiting data'}
+          label="Top primary search"
+          value={topPrimary ? topPrimary.name : '—'}
+          hint={topPrimary ? `${topPrimary.count} listings` : 'Awaiting data'}
         />
         <Insight
           icon="zap"
@@ -107,9 +107,9 @@ export default function Analytics({ refreshKey }) {
           {data ? <BarList items={filterCounts} /> : <div className="skeleton skeleton--block" />}
         </SectionCard>
 
-        <SectionCard title="Fresher signal mix" hint="Title wording that qualified each listing" icon="graduation" className="span-5">
+        <SectionCard title="Primary search mix" hint="The search each listing was primarily found in" icon="layers" className="span-5">
           {data ? (
-            <Donut items={evidenceCounts} centerValue={stats?.total ?? 0} centerLabel="matched" />
+            <Donut items={primarySearchCounts} centerValue={stats?.total ?? 0} centerLabel="listings" />
           ) : (
             <div className="skeleton skeleton--block" />
           )}
@@ -140,11 +140,11 @@ export default function Analytics({ refreshKey }) {
 
         <div className="coverage-grid">
           {searchStatus.map((item) => {
-            const isCollected = item.status === 'collected'
+            const isCollected = Boolean(item.results_collected)
             return (
-              <div className={`coverage-card ${isCollected ? 'is-ok' : 'is-warn'}`} key={item.filter}>
+              <div className={`coverage-card ${isCollected ? 'is-ok' : 'is-warn'}`} key={item.keyword}>
                 <div className="coverage-card__head">
-                  <strong>{item.filter}</strong>
+                  <strong>{item.keyword}</strong>
                   <span className={`status-pill ${isCollected ? 'status-pill--ok' : 'status-pill--warn'}`}>
                     {isCollected ? (
                       <>
@@ -152,25 +152,16 @@ export default function Analytics({ refreshKey }) {
                       </>
                     ) : (
                       <>
-                        <Icon name="alert" size={12} /> {item.status}
+                        <Icon name="alert" size={12} /> not collected
                       </>
                     )}
                   </span>
                 </div>
                 <div className="coverage-card__stats">
                   <span>
-                    <strong>{item.rendered_card_count ?? 0}</strong> cards rendered
-                  </span>
-                  <span>
-                    <strong>{item.title_matches ?? 0}</strong> title matches
+                    <strong>{item.visible_card_count ?? 0}</strong> cards visible
                   </span>
                 </div>
-                {isCollected ? null : (
-                  <details className="coverage-card__error">
-                    <summary>View error log</summary>
-                    <pre>{item.error || 'No error captured'}</pre>
-                  </details>
-                )}
               </div>
             )
           })}
@@ -184,8 +175,8 @@ export default function Analytics({ refreshKey }) {
               <Icon name="sparkles" size={17} />
             </span>
             <div>
-              <strong>Fresher match rule</strong>
-              <p>{dataset?.fresher_match_rule || 'No rule recorded.'}</p>
+              <strong>Posting time note</strong>
+              <p>{dataset?.posting_time_note || 'No note recorded.'}</p>
             </div>
           </div>
           <div className="note-card">

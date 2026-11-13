@@ -24,9 +24,9 @@ export default function JobDrawer({ job, onClose }) {
 
   if (!job) return null
 
-  const positions = Object.entries(toObject(job.positions_by_filter))
+  const positions = Object.entries(toObject(job.positions_by_search))
   const maxPosition = Math.max(1, ...positions.map(([, value]) => Number(value) || 0))
-  const filters = job.matched_filters || []
+  const searches = job.matched_searches || []
 
   return (
     <div className="drawer-overlay" onClick={onClose}>
@@ -60,17 +60,17 @@ export default function JobDrawer({ job, onClose }) {
             <div className="detail-tile">
               <Icon name="clock" size={16} />
               <span>Posted</span>
-              <strong>{job.posted || '—'}</strong>
+              <strong>{job.posted_time || '—'}</strong>
             </div>
             <div className="detail-tile">
-              <Icon name="graduation" size={16} />
-              <span>Fresher signal</span>
-              <strong>{job.fresher_title_evidence || 'Fresher'}</strong>
+              <Icon name="calendar" size={16} />
+              <span>Posted date</span>
+              <strong>{job.posted_date_approx || '—'}</strong>
             </div>
             <div className="detail-tile">
               <Icon name="layers" size={16} />
               <span>Matched tracks</span>
-              <strong>{filters.length}</strong>
+              <strong>{searches.length}</strong>
             </div>
           </div>
 
@@ -84,12 +84,12 @@ export default function JobDrawer({ job, onClose }) {
           </div>
 
           <section className="drawer__section">
-            <h3 className="drawer__section-title">Matched role tracks</h3>
+            <h3 className="drawer__section-title">Matched search tracks</h3>
             <div className="tag-row">
-              {filters.length ? (
-                filters.map((filter) => (
-                  <span className="tag tag--accent" key={filter}>
-                    {filter}
+              {searches.length ? (
+                searches.map((search) => (
+                  <span className="tag tag--accent" key={search}>
+                    {search}
                   </span>
                 ))
               ) : (

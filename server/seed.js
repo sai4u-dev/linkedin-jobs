@@ -7,7 +7,8 @@ import { Job } from './models/Job.js'
 import { Dataset } from './models/Dataset.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const sourcePath = path.resolve(__dirname, '..', 'lob_listing.json')
+const sourcePath = path.resolve(__dirname, '..', 'todaytimeanddate.json')
+const TIMEZONE_OFFSET = '+05:30'
 
 function parsePostedHours(posted) {
   if (!posted) return null
@@ -17,6 +18,18 @@ function parsePostedHours(posted) {
   const unit = match[2].toLowerCase()
   const factor = { minute: 1 / 60, hour: 1, day: 24, week: 168 }[unit]
   return Math.round(value * factor * 100) / 100
+}
+
+function parsePostedAt(value) {
+  if (!value) return null
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
+function parsePostedDate(value) {
+  if (!value) return null
+  const date = new Date(`${value}T00:00:00${TIMEZONE_OFFSET}`)
+  return Number.isNaN(date.getTime()) ? null : date
 }
 
 function deriveLocation(location) {
@@ -45,21 +58,28 @@ async function run() {
 
   const docs = listings.map((listing) => {
     const { city, region } = deriveLocation(listing.location)
+    const matchedSearches = listing.matched_searches || []
     return {
       title: listing.title,
       company: listing.company,
       location: listing.location,
-      posted: listing.posted,
+      posted_time: listing.posted_time || '',
+      posted_at: parsePostedAt(listing.posted_at_approx),
+      posted_date: parsePostedDate(listing.posted_date_approx),
+      posted_at_approx: listing.posted_at_approx || '',
+      posted_date_approx: listing.posted_date_approx || '',
+      posted_hours: parsePostedHours(listing.posted_time),
       job_url: listing.job_url,
-      fresher_title_evidence: listing.fresher_title_evidence || '',
-      matched_filters: listing.matched_filters || [],
-      positions_by_filter: listing.positions_by_filter || {},
-      order: listing.order ?? 0,
       apply_link: listing.apply_link || listing.job_url,
-      posted_hours: parsePostedHours(listing.posted),
+      matched_searches: matchedSearches,
+      positions_by_search: listing.positions_by_search || {},
+      search_keyword: listing.search_keyword || matchedSearches[0] || '',
+      position_in_search: listing.position_in_search ?? null,
+      data_source: listing.data_source || '',
       city,
       region,
-      primary_filter: (listing.matched_filters || [])[0] || 'Unclassified',
+      primary_search: matchedSearches[0] || listing.search_keyword || 'Unclassified',
+      order: listing.order ?? 0,
     }
   })
 
@@ -70,12 +90,15 @@ async function run() {
   await Dataset.create({
     key: 'default',
     collected_at: raw.collected_at || '',
+    collected_date: raw.collected_date || '',
+    timezone: raw.timezone || '',
     filters: raw.filters || {},
-    fresher_match_rule: raw.fresher_match_rule || '',
-    search_status: raw.search_status || [],
+    source_reference: raw.source_reference || '',
+    posting_time_note: raw.posting_time_note || '',
+    searches: raw.searches || [],
     result_count: raw.result_count ?? docs.length,
     scope_note: raw.scope_note || '',
-    source_file: 'lob_listing.json',
+    source_file: path.basename(sourcePath),
     seeded_at: new Date(),
   })
 

@@ -187,7 +187,7 @@ export default function Shell() {
               </span>
               <div>
                 <strong>{user?.name || 'Administrator'}</strong>
-                <small>{user?.username || 'admin'}</small>
+                <small>{user?.email || user?.username || 'admin'}</small>
               </div>
             </div>
           </div>

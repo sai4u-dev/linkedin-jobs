@@ -1,0 +1,177 @@
+{
+  "collected_at": "2026-11-12T13:11:27+05:30",
+  "filters": {
+    "location": "India",
+    "posted_within": "Past 24 hours (LinkedIn f_TPR=r86400)",
+    "experience_level": "LinkedIn Entry level (f_E=2)",
+    "search_keyword_suffix": "Fresher"
+  },
+  "selection_rule": "Only included listings whose accessible job descriptions explicitly state that freshers/recent graduates are eligible or that prior professional experience is not mandatory. Titles/job descriptions were limited to development-related internships. Roles requiring 1+ years or with inaccessible/unclear eligibility were excluded.",
+  "eligibility_note": "All included results are internships. No verified full-time graduate-role descriptions were accessible in this collection. Review the employer posting for any additional conditions before applying.",
+  "posting_time_note": "posted_time is copied from LinkedIn. Approximate date/time are based on rounded relative labels and collection time.",
+  "search_status": [
+    {
+      "keyword": "Software Engineer",
+      "query": "Software Engineer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Software%20Engineer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Software Engineer Fresher Jobs in India (1,000+ Open Roles) | LinkedIn",
+      "status": "collected",
+      "visible_cards": 60,
+      "candidate_titles": 12
+    },
+    {
+      "keyword": "Software Developer",
+      "query": "Software Developer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Software%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Sign Up | LinkedIn",
+      "status": "blocked",
+      "visible_cards": 0,
+      "candidate_titles": 0
+    },
+    {
+      "keyword": "MERN",
+      "query": "MERN Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=MERN%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "MERN Fresher Jobs in India (249 Open Roles) | LinkedIn",
+      "status": "collected",
+      "visible_cards": 60,
+      "candidate_titles": 10
+    },
+    {
+      "keyword": "JavaScript",
+      "query": "JavaScript Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=JavaScript%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "JavaScript Fresher Jobs in India (441 Open Roles) | LinkedIn",
+      "status": "collected",
+      "visible_cards": 60,
+      "candidate_titles": 8
+    },
+    {
+      "keyword": "Node Js Developer",
+      "query": "Node Js Developer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Node%20Js%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Sign Up | LinkedIn",
+      "status": "blocked",
+      "visible_cards": 0,
+      "candidate_titles": 0
+    },
+    {
+      "keyword": "Backend Developer",
+      "query": "Backend Developer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Backend%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Sign Up | LinkedIn",
+      "status": "blocked",
+      "visible_cards": 0,
+      "candidate_titles": 0
+    },
+    {
+      "keyword": "Frontend Developer",
+      "query": "Frontend Developer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Frontend%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Frontend Developer Fresher Jobs in India (281 Open Roles) | LinkedIn",
+      "status": "collected",
+      "visible_cards": 60,
+      "candidate_titles": 16
+    },
+    {
+      "keyword": "Full Stack Developer",
+      "query": "Full Stack Developer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Full%20Stack%20Developer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Full Stack Developer Fresher Jobs in India (754 Open Roles) | LinkedIn",
+      "status": "collected",
+      "visible_cards": 60,
+      "candidate_titles": 10
+    },
+    {
+      "keyword": "Full Stack Engineer",
+      "query": "Full Stack Engineer Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Full%20Stack%20Engineer%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": "Sign Up | LinkedIn",
+      "status": "blocked",
+      "visible_cards": 0,
+      "candidate_titles": 0
+    },
+    {
+      "keyword": "Java",
+      "query": "Java Fresher",
+      "source_url": "https://in.linkedin.com/jobs/search?keywords=Java%20Fresher&location=India&geoId=102713980&f_TPR=r86400&f_E=2&activeFilter=f_E&position=1&pageNum=0",
+      "page_title": null,
+      "status": "unavailable",
+      "visible_cards": 0,
+      "candidate_titles": 0
+    }
+  ],
+  "result_count": 4,
+  "scope_note": "A strict corrected set. Four job descriptions explicitly supported fresher/recent-graduate eligibility. Other candidates were excluded when experience requirements were unclear, the description was blocked, or the listing was not development-related.",
+  "listings": [
+    {
+      "title": "Frontend Developer Intern",
+      "company": "ThinkNovaa",
+      "location": "India",
+      "posted_time": "3 hours ago",
+      "posted_date_approx": "2026-11-12",
+      "posted_at_approx": "2026-11-12T10:11+05:30",
+      "job_url": "https://in.linkedin.com/jobs/view/frontend-developer-intern-at-thinknovaa-4489063816",
+      "apply_link": "https://in.linkedin.com/jobs/view/frontend-developer-intern-at-thinknovaa-4489063816",
+      "role_group": "fresher_no_experience",
+      "eligibility_evidence": "Job description explicitly welcomes students, freshers and graduates; prior professional experience is not mandatory.",
+      "matched_searches": ["Frontend Developer"],
+      "positions_by_search": {
+        "Frontend Developer": 48
+      },
+      "order": 1
+    },
+    {
+      "title": "Front End Developer Intern (HTML, CSS, JavaScript, React)",
+      "company": "Skillzenloop",
+      "location": "India",
+      "posted_time": "14 hours ago",
+      "posted_date_approx": "2026-11-11",
+      "posted_at_approx": "2026-11-11T23:11+05:30",
+      "job_url": "https://in.linkedin.com/jobs/view/front-end-developer-intern-html-css-javascript-react-at-skillzenloop-4488254030",
+      "apply_link": "https://in.linkedin.com/jobs/view/front-end-developer-intern-html-css-javascript-react-at-skillzenloop-4488254030",
+      "role_group": "fresher_no_experience",
+      "eligibility_evidence": "Job description explicitly welcomes freshers with no prior experience; also accepts final-year students and recent graduates.",
+      "matched_searches": ["Frontend Developer"],
+      "positions_by_search": {
+        "Frontend Developer": 32
+      },
+      "order": 2
+    },
+    {
+      "title": "Full Stack Development Intern",
+      "company": "AzimuthForge",
+      "location": "India",
+      "posted_time": "34 minutes ago",
+      "posted_date_approx": "2026-11-12",
+      "posted_at_approx": "2026-11-12T12:37+05:30",
+      "job_url": "https://in.linkedin.com/jobs/view/full-stack-development-intern-at-azimuthforge-4488283587",
+      "apply_link": "https://in.linkedin.com/jobs/view/full-stack-development-intern-at-azimuthforge-4488283587",
+      "role_group": "recent_graduate",
+      "eligibility_evidence": "Job description explicitly welcomes students and recent graduates (B.Tech/BCA/B.Sc CS/MCA or similar).",
+      "matched_searches": ["JavaScript", "Frontend Developer"],
+      "positions_by_search": {
+        "JavaScript": 51,
+        "Frontend Developer": 51
+      },
+      "order": 3
+    },
+    {
+      "title": "MERN STACK DEVELOPMENT INTERN",
+      "company": "WebBoost Solutions by UM",
+      "location": "India",
+      "posted_time": "1 hour ago",
+      "posted_date_approx": "2026-11-12",
+      "posted_at_approx": "2026-11-12T12:11+05:30",
+      "job_url": "https://in.linkedin.com/jobs/view/mern-stack-development-intern-at-webboost-solutions-by-um-4490091694",
+      "apply_link": "https://in.linkedin.com/jobs/view/mern-stack-development-intern-at-webboost-solutions-by-um-4490091694",
+      "role_group": "recent_graduate",
+      "eligibility_evidence": "Job description says the program is for college students and also welcomes recently graduated candidates in CS/IT/software-related fields. It is explicitly a full-time internship.",
+      "matched_searches": ["MERN"],
+      "positions_by_search": {
+        "MERN": 32
+      },
+      "order": 4
+    }
+  ]
+}
